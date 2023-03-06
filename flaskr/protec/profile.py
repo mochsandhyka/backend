@@ -4,6 +4,7 @@ from configur import app,jwt_required,get_jwt_identity,jsonify,HTTPStatus,db
 @jwt_required()
 def list():
     current_user = get_jwt_identity() 
+    print(current_user)
     _id = current_user[0][0]
     a = {}
     for i in db.select(f"select id_user,name,username,email,gender,picture from tbl_user where id_user = '{_id}'"):

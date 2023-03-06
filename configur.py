@@ -6,6 +6,7 @@ from http import HTTPStatus
 from model import db
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
+from datetime import timedelta
 
 
 app = Flask(__name__)
@@ -22,7 +23,14 @@ app.config['ALLOWED_EXTENSIONS'] = os.getenv("ALLOWED_EXTENSION")
 uploadfolder = app.config['UPLOAD_FOLDER']
 allowedextensions = app.config['ALLOWED_EXTENSIONS']
 maxcontent = app.config['MAX_CONTENT_LENGHT']
- 
+app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['JWT_ACCESS_CSRF_HEADER_NAME'] = "csrftoken"
+
+#app.config['JWT_CSRF_CHECK_FORM'] = True
+
 jwt = JWTManager(app)
 ponyapp = Pony(app)
 CORS(app)

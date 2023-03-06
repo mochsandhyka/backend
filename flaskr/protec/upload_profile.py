@@ -3,18 +3,11 @@ app.config['JWT_CSRF_CHECK_FORM'] = True
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
-@app.route("/upload/profile",methods = ['PUT','GET'])
+@app.route("/upload/profile",methods = ['PUT'])
 @jwt_required()
 def upload():
-    current_user = get_jwt_identity()
-    a = {
-            "id_user": current_user[0][0],
-            "pic_user": current_user[0][1]
-        }
-    if request.method == 'GET':
-        return current_user
-    else:
         try:
+            current_user = get_jwt_identity()
             if 'picture' not in request.files:
                 response ={
                         "Data": "Bad Request",

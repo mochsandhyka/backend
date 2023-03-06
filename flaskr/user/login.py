@@ -1,9 +1,6 @@
 from configur import get_csrf_token,app,request,hashlib,jwt_required,set_refresh_cookies,create_refresh_token,get_jwt_identity,get_jwt,db,create_access_token,jsonify,HTTPStatus,unset_access_cookies,os,set_access_cookies
 from datetime import timedelta,timezone,datetime
-app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
-app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+
  
 # @app.after_request 
 # def refresh_expiring_jwts(response):
@@ -40,8 +37,9 @@ def loginUser():
         user = db.select(f"select id_user,role from tbl_user where username = '{jsonBody['username']}' and password = '{hashpassword.hexdigest()}' ")
         if user:
             access_token = create_access_token(identity=user,fresh=True) 
+            csrf_token = get_csrf_token(access_token)
             response = jsonify({
-                "Data": get_csrf_token(access_token),
+                "Data": csrf_token,
                 "Message": "Login Success"
             })
             set_access_cookies(response, access_token)
