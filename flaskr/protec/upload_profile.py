@@ -4,7 +4,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
 @app.route("/upload/profile",methods = ['PUT'])
-@jwt_required()
+@jwt_required(fresh=True)
 def upload():
         try:
             current_user = get_jwt_identity()

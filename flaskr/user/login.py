@@ -57,13 +57,29 @@ def loginUser():
         }
         return jsonify(response),HTTPStatus.BAD_GATEWAY
     
-@app.route("/auth/user/logout",methods=['POST']) 
+@app.route("/auth/user/logout",methods=['POST'])
+@jwt_required()
 def logout():
     try:
-        response = jsonify("Logout Successfull")
-        unset_access_cookies(response)
-        return response,HTTPStatus.OK
+        gji = get_jwt_identity()
+        if gji:
+            response = jsonify({
+                "Data": "Success",
+                "Message": "Logout Successfull"
+            })
+            unset_access_cookies(response)
+            return response,HTTPStatus.OK
+        else:
+            response = jsonify({
+                "Data": "Success",
+                "Message": "Logout Successfull"
+            })
+            return response,HTTPStatus.BAD_REQUEST
     except Exception as err:
+        response = jsonify({
+                "Data": str(err),
+                "Message": "Already Logout"
+            })
         return response,HTTPStatus.BAD_GATEWAY
     
 

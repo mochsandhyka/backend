@@ -8,9 +8,7 @@ def listUser():
     y = []
     for i in listUser:
         y.append(i)
-    listSelectUser = []
-    # filename = secure_filename(file.filename)
-    # file_url = url_for('get_file',filename=filename)
+    listSelectUser = [] 
     for i in y:
         dictUser ={
             "id": i[0],

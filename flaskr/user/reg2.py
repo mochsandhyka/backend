@@ -3,8 +3,8 @@ from configur import myId,app,request,jsonify,HTTPStatus,email_regex,hashlib,db,
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
-@app.route("/auth/reg/user", methods = ['POST'])
-def regUser():
+@app.route("/auth/reg/user2", methods = ['POST'])
+def regUser2():
     try:
         files = request.files.getlist('picture')
         address = request.form.get("address")
@@ -15,8 +15,9 @@ def regUser():
         password = request.form.get("password")
         phone_number = request.form.get("phone_number")
         role = request.form.get("role")
-        username = request.form.get("username")
-        # jsonbody = request.form.to_dict('jsonbody')
+        username = request.form.get("username") 
+        json = request.form.to_dict('json')
+        print(json)
         success = False
         checkUser = db.select(f"select * from tbl_user where username = '{username}' or email = '{email}'")
         if address == "" or city == "" or email == "" or gender =="" or name =="" or password =="" or phone_number == "" or role =="" or username == "":
@@ -35,7 +36,7 @@ def regUser():
             for i in files:
                 if i and allowed_file(i.filename):
                     filename = secure_filename(i.filename)
-                    picfilename = str(myId) + filename 
+                    picfilename = username + filename 
                     i.save(os.path.join(uploadfolder,picfilename))
                     success = True
                 if success:
@@ -43,7 +44,7 @@ def regUser():
                     createUser = (f"insert into tbl_user(id_user,username,email,password,name,gender,address,city,phone_number,date_register,picture,role) values('{myId}','{username}','{email}','{hashpassword.hexdigest()}','{name}','{gender}','{address}','{city}','{phone_number}',now(),'{filename}','{role}')")
                     db.execute(createUser)
                     response={
-                                "Data": username,
+                                "Data": "data",
                                 "Message": "Data Created"
                             }
                     return jsonify(response),HTTPStatus.OK
