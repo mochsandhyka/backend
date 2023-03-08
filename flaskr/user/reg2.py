@@ -3,8 +3,8 @@ from configur import myId,app,request,jsonify,HTTPStatus,email_regex,hashlib,db,
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
-@app.route("/auth/reg/user2", methods = ['POST'])
-def regUser2():
+@app.route("/auth/regis/user", methods = ['POST'])
+def regisUser():
     try:
         files = request.files.getlist('picture')
         address = request.form.get("address")
@@ -15,10 +15,9 @@ def regUser2():
         password = request.form.get("password")
         phone_number = request.form.get("phone_number")
         role = request.form.get("role")
-        username = request.form.get("username") 
-        json = request.form.to_dict('json')
-        print(json)
+        username = request.form.get("username")
         success = False
+        hashpassword = hashlib.md5((password+ os.getenv("SALT_PASSWORD")).encode())
         checkUser = db.select(f"select * from tbl_user where username = '{username}' or email = '{email}'")
         if address == "" or city == "" or email == "" or gender =="" or name =="" or password =="" or phone_number == "" or role =="" or username == "":
             response ={
@@ -36,15 +35,22 @@ def regUser2():
             for i in files:
                 if i and allowed_file(i.filename):
                     filename = secure_filename(i.filename)
-                    picfilename = username + filename 
+                    picfilename = str(myId) + '_' + filename 
                     i.save(os.path.join(uploadfolder,picfilename))
                     success = True
                 if success:
-                    hashpassword = hashlib.md5((password+ os.getenv("SALT_PASSWORD")).encode())
-                    createUser = (f"insert into tbl_user(id_user,username,email,password,name,gender,address,city,phone_number,date_register,picture,role) values('{myId}','{username}','{email}','{hashpassword.hexdigest()}','{name}','{gender}','{address}','{city}','{phone_number}',now(),'{filename}','{role}')")
+                    createUser = (f"insert into tbl_user(id_user,username,email,password,name,gender,address,city,phone_number,date_register,picture,role) values('{myId}','{username}','{email}','{hashpassword.hexdigest()}','{name}','{gender}','{address}','{city}','{phone_number}',now(),'{picfilename}','{role}')")
                     db.execute(createUser)
                     response={
-                                "Data": "data",
+                                "Data": username,
+                                "Message": "Data Created"
+                            }
+                    return jsonify(response),HTTPStatus.OK
+            if not files:
+                    createUser = (f"insert into tbl_user(id_user,username,email,password,name,gender,address,city,phone_number,date_register,role,picture) values('{myId}','{username}','{email}','{hashpassword.hexdigest()}','{name}','{gender}','{address}','{city}','{phone_number}',now(),'{role}','b.png')")
+                    db.execute(createUser)
+                    response={
+                                "Data": username,
                                 "Message": "Data Created"
                             }
                     return jsonify(response),HTTPStatus.OK

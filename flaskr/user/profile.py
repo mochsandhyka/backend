@@ -6,19 +6,21 @@ def list():
     try:
         current_user = get_jwt_identity() 
         if current_user:
-            _id = current_user[0][0]
-            a = {}
-            for i in db.select(f"select id_user,name,username,email,gender,picture from tbl_user where id_user = '{_id}'"):
-                a = {
+            id = current_user[0][0] 
+            for i in db.select(f"select id_user,username,email,name,gender,address,city,phone_number,picture from tbl_user where id_user = '{id}'"):
+                Data = {
                     "id": i[0],
-                    "name": i[1],
-                    "username": i[2], 
-                    "email": i[3], 
+                    "username": i[1],
+                    "email": i[2], 
+                    "name": i[3], 
                     "gender": i[4],
-                    "picture": i[5]
+                    "address": i[5],
+                    "city": i[6],
+                    "phone_number": i[7],
+                    "picture": i[8]
                 } 
             response = {
-                    "data": a,
+                    "data": Data,
                     "message": "Success"
                 }
             return jsonify(response),HTTPStatus.OK

@@ -35,8 +35,13 @@ def loginUser():
         jsonBody = request.json
         hashpassword = hashlib.md5((jsonBody['password']+os.getenv("SALT_PASSWORD")).encode())
         user = db.select(f"select id_user,role from tbl_user where username = '{jsonBody['username']}' and password = '{hashpassword.hexdigest()}' ")
+        for i in user:
+            userauth = {
+                'id':i[0],
+                'role': i[1]
+            }
         if user:
-            access_token = create_access_token(identity=user,fresh=True) 
+            access_token = create_access_token(identity=userauth,fresh=True) 
             csrf_token = get_csrf_token(access_token)
             response = jsonify({
                 "Data": csrf_token,

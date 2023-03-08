@@ -28,5 +28,5 @@ import flaskr.book_publisher.update_book_publisher as update_book_publisher
 import flaskr.book_publisher.delete_book_publisher as delete_book_publisher
 
 import flaskr.protec.upload_profile
-import flaskr.protec.profile
-import flaskr.protec.protec, flaskr.user.reg2
+import flaskr.user.profile
+import flaskr.protec.protec, flaskr.user.reg2,flaskr.user.update_user_back

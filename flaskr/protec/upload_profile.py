@@ -3,7 +3,7 @@ app.config['JWT_CSRF_CHECK_FORM'] = True
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
-@app.route("/upload/profile",methods = ['PUT'])
+@app.route("/upload/profile",methods = ['PATCH'])
 @jwt_required(fresh=True)
 def upload():
         try:
