@@ -1,9 +1,10 @@
 
-from configur import app,request,jsonify,HTTPStatus,db
+from configur import app,request,jsonify,HTTPStatus,db,generateId
 
 @app.route('/create/book/category', methods=['POST'])
 def createBookCategory():
     try:
+        myId = generateId()
         jsonBody = request.json
         checkBookCategory = db.select(f"select * from tbl_book_category where category = '{jsonBody['category']}'")
         if jsonBody['category'] == "":
@@ -19,7 +20,7 @@ def createBookCategory():
             }
             return jsonify(response),HTTPStatus.BAD_REQUEST
         elif not checkBookCategory:
-            createBookCategory = (f"insert into tbl_book_category(category) values('{jsonBody['category']}')")
+            createBookCategory = (f"insert into tbl_book_category(id_book_category,category) values('{myId}','{jsonBody['category']}')")
             db.execute(createBookCategory)
             response={
                 "Data": jsonBody,

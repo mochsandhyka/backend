@@ -1,4 +1,4 @@
-from configur import myId,app,request,jsonify,HTTPStatus,email_regex,hashlib,db,os,allowedextensions,maxcontent,db,url_for,secure_filename,os,uploadfolder
+from configur import generateId,uuid,app,request,jsonify,HTTPStatus,email_regex,hashlib,db,os,allowedextensions,maxcontent,db,url_for,secure_filename,os,uploadfolder
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
@@ -6,6 +6,7 @@ def allowed_file(filename):
 @app.route("/auth/regis/user", methods = ['POST'])
 def regisUser():
     try:
+        myId = generateId()
         files = request.files.getlist('picture')
         address = request.form.get("address")
         city = request.form.get("city")
@@ -16,19 +17,32 @@ def regisUser():
         phone_number = request.form.get("phone_number")
         role = request.form.get("role")
         username = request.form.get("username")
-        success = False
+        #success = False
         hashpassword = hashlib.md5((password+ os.getenv("SALT_PASSWORD")).encode())
-        checkUser = db.select(f"select * from tbl_user where username = '{username}' or email = '{email}'")
+        checkUsername = db.select(f"select * from tbl_user where username = '{username}'")
+        checkEmail = db.select(f"select * from tbl_user where email = '{email}'")
         if address == "" or city == "" or email == "" or gender =="" or name =="" or password =="" or phone_number == "" or role =="" or username == "":
             response ={
                 "Data": "Bad Request",
                 "Message": "All Data Must be Filled"
             }
             return jsonify(response),HTTPStatus.BAD_REQUEST
-        elif checkUser:
+        elif role != "user" and role != "admin":
             response ={
                 "Data": "Bad Request",
-                "Message": "Username or Email already registered"
+                "Message": "Role Must User or Admin"
+            }
+            return jsonify(response),HTTPStatus.BAD_REQUEST
+        elif checkUsername:
+            response ={
+                "Data": "Bad Request",
+                "Message": "Username already registered"
+            }
+            return jsonify(response),HTTPStatus.BAD_REQUEST
+        elif checkEmail:
+            response ={
+                "Data": "Bad Request",
+                "Message": "Email already registered"
             }
             return jsonify(response),HTTPStatus.BAD_REQUEST
         elif email_regex.match(email):

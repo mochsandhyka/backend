@@ -4,7 +4,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
 @app.route("/upload/profile",methods = ['PATCH'])
-@jwt_required(fresh=True)
+@jwt_required()
 def upload():
         try:
             current_user = get_jwt_identity()
@@ -21,7 +21,7 @@ def upload():
                 user = {
                     "id_user": user[0],
                     "pic_user": user[1]
-                }  
+                } 
             for file in files:
                 if file and allowed_file(file.filename):
                     try:

@@ -1,6 +1,7 @@
 from flask import Flask,request,jsonify,url_for
 import os,re,hashlib,uuid
 from pony.flask import Pony
+from pony.orm import select
 from flask_jwt_extended import get_csrf_token,get_jwt,set_refresh_cookies,create_refresh_token,jwt_manager,JWTManager,set_access_cookies,create_access_token,jwt_required,get_jwt_identity,unset_access_cookies
 from http import HTTPStatus
 from model import db
@@ -25,11 +26,18 @@ allowedextensions = app.config['ALLOWED_EXTENSIONS']
 maxcontent = app.config['MAX_CONTENT_LENGHT']
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
+#app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_CSRF_HEADER_NAME'] = "csrftoken"
 
+def generateId():
+    myId = uuid.uuid4()
+    return myId
+
 #app.config['JWT_CSRF_CHECK_FORM'] = True
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedextensions
 
 jwt = JWTManager(app)
 ponyapp = Pony(app)

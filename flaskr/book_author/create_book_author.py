@@ -1,8 +1,9 @@
-from configur import app,email_regex,request,jsonify,HTTPStatus,db
+from configur import app,email_regex,request,jsonify,HTTPStatus,db,generateId
 
 @app.route('/create/book/author', methods=['POST'])
 def createBookAuthor():
     try:
+        myId = generateId()
         jsonBody = request.json
         checkBookAuthor = db.select(f"select * from tbl_book_author where name = '{jsonBody['name']}'")
         if jsonBody['name'] == "" or jsonBody['email'] == "" or jsonBody['gender'] == "" or jsonBody['address'] == "" or jsonBody['phone_number'] == ""  :
@@ -18,7 +19,7 @@ def createBookAuthor():
             }
             return jsonify(response),HTTPStatus.BAD_REQUEST
         elif not checkBookAuthor and email_regex.match(jsonBody['email']) :
-            createBookAuthor = (f"insert into tbl_book_author(name,email,gender,address,phone_number) values('{jsonBody['name']}','{jsonBody['email']}','{jsonBody['gender']}','{jsonBody['address']}','{jsonBody['phone_number']}')")
+            createBookAuthor = (f"insert into tbl_book_author(id_book_author,name,email,gender,address,phone_number) values('{myId}','{jsonBody['name']}','{jsonBody['email']}','{jsonBody['gender']}','{jsonBody['address']}','{jsonBody['phone_number']}')")
             db.execute(createBookAuthor)
             response={
                 "Data": jsonBody,

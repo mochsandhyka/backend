@@ -1,4 +1,4 @@
-from configur import get_csrf_token,app,request,hashlib,jwt_required,set_refresh_cookies,create_refresh_token,get_jwt_identity,get_jwt,db,create_access_token,jsonify,HTTPStatus,unset_access_cookies,os,set_access_cookies
+from configur import get_csrf_token,app,request,hashlib,jwt_required,get_jwt_identity,get_jwt,db,create_access_token,jsonify,HTTPStatus,unset_access_cookies,os,set_access_cookies
 from datetime import timedelta,timezone,datetime
 
  
@@ -42,9 +42,9 @@ def loginUser():
             }
         if user:
             access_token = create_access_token(identity=userauth,fresh=True) 
-            csrf_token = get_csrf_token(access_token)
+            #csrf_token = get_csrf_token(access_token)
             response = jsonify({
-                "Data": csrf_token,
+                "Data": "csrf_token",
                 "Message": "Login Success"
             })
             set_access_cookies(response, access_token)
@@ -62,7 +62,7 @@ def loginUser():
         }
         return jsonify(response),HTTPStatus.BAD_GATEWAY
     
-@app.route("/auth/user/logout",methods=['POST'])
+@app.route("/auth/user/logout",methods=['DELETE'])
 @jwt_required()
 def logout():
     try:
