@@ -25,7 +25,7 @@ uploadfolder = app.config['UPLOAD_FOLDER']
 allowedextensions = app.config['ALLOWED_EXTENSIONS']
 maxcontent = app.config['MAX_CONTENT_LENGHT']
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=100)
 #app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=1)
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_CSRF_HEADER_NAME'] = "csrftoken"

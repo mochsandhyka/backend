@@ -1,5 +1,38 @@
 from configur import app,select,db,uuid,get_jwt_identity,jwt_required,generateId,jsonify,HTTPStatus
 
+@app.route("/cc")
+@jwt_required()
+def listBooked():
+    currentuser = get_jwt_identity()
+    id = currentuser['id']
+    select = db.execute(f"select b.loan_date,c.book_title from tbl_detail_borrowed_book as a left join tbl_borrowed_book as b on (a.id_book_borrowed = b.id_book_borrowed) left join tbl_book as c on (a.id_book = c.id_book) where b.id_user = '{id}' ")
+    listbuku = []
+    for i in select:
+        dict ={
+            "id_book": i[0],
+            "stock": i[1]
+        }
+        listbuku.append(dict)
+    return listbuku
+
+
+@app.route("/bb")
+@jwt_required()
+def listBook():
+    currentUser = get_jwt_identity()
+    id = currentUser['id']
+    # selectbuku = db.execute(f"select a.id_book,a.stock,a.book_title,b.category,c.name,d.name from tbl_book as a left join tbl_book_category as b on (a.id_book_category = b.id_book_category) left join tbl_book_author as c on (a.id_book_author = c.id_book_author) left join tbl_book_publisher as d on (a.id_book_publisher = d.id_book_publisher)")
+    selecta = db.execute(f"select id_book,book_title from tbl_book where id_book not in(select a.id_book from tbl_detail_borrowed_book as a left join tbl_borrowed_book as b on (a.id_book_borrowed = b.id_book_borrowed) where id_user = '{id}')")
+    listbuku = []
+    for i in selecta:
+         dict = {
+            "id_book":i[0],
+            "book_title":i[1]
+         }
+         listbuku.append(dict)
+
+    return jsonify(listbuku)
+
 @app.route("/bb/<book>",methods = ['POST'])
 @jwt_required()
 def borrowBook(book):
@@ -13,7 +46,7 @@ def borrowBook(book):
         x = []
         for i in a:
              x.append(i)
-        if len(x) > 2:
+        if len(x) >= 3:
             response={
                   "Data":"Bad Request",
                   "Message": "You Already borrow 3 Book"
