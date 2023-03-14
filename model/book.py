@@ -12,4 +12,5 @@ class Book(db.Entity):
     book_author = Required(BookAuthor,column='id_book_author')
     book_publisher = Required(Publisher,column='id_book_publisher')
     borrowed_detail = Set('BorrowedDetail')
+    return_detail = Set('ReturnDetail')
     picture = Optional(str)

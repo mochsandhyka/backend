@@ -14,4 +14,5 @@ class User(db.Entity):
     date_register = Required(date)
     picture = Optional(str)
     role = Required(str)
-    borrowedbook = Set('BorrowedBook') 
+    borrowedbook = Set('BorrowedBook')
+    returnbook= Set('ReturnBook')

@@ -1,6 +1,5 @@
-from .base import db,Required,PrimaryKey,Set,Optional,uuid
-from .user import User
-from datetime import date
+from .base import db,Required,PrimaryKey,Set,Optional,uuid,date
+from .user import User 
 
 class BorrowedBook(db.Entity):
     _table_ = "tbl_borrowed_book"
@@ -10,3 +9,4 @@ class BorrowedBook(db.Entity):
     status = Required(bool)
     user = Required(User,column='id_user')
     borrowed_detail = Set('BorrowedDetail')
+    return_book = Set('ReturnBook')
